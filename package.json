@@ -2,5 +2,6 @@
   "name": "tap-portal",
   "version": "5.0.0",
   "description": "TAP Store Internal Portal",
+  "type": "module",
   "private": true
 }
