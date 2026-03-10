@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f05a28">
+<title>TAP Store Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f2f6;--card:#fff;--border:#e8e8f0;--text:#16162e;--sub:#8686a0;--muted:#d0d0da;--accent:#f05a28;--accent-soft:#fff3ec;--green:#10b981;--green-soft:#ecfdf5;--red:#ef4444;--red-soft:#fef2f2;--yellow:#f59e0b;--yellow-soft:#fffbeb;--blue:#3b82f6;--blue-soft:#eff6ff;--purple:#8b5cf6;--purple-soft:#f5f3ff;--input:#f6f6fa}
+.dark{--bg:#0a0a14;--card:#141424;--border:#1e1e3a;--text:#e0e0ea;--sub:#6a6a84;--muted:#2a2a44;--accent-soft:#261408;--green-soft:#061e16;--red-soft:#240808;--yellow-soft:#241c00;--blue-soft:#061424;--purple-soft:#140624;--input:#0e0e24}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--text);transition:background .3s}
+input,textarea,select,button{font-family:'Quicksand',sans-serif}
+input::placeholder,textarea::placeholder{color:var(--sub);opacity:.6}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--muted);border-radius:4px}
+.wrap{max-width:480px;margin:0 auto;padding:12px 12px 80px}
+.wrap-admin{max-width:540px;margin:0 auto;padding:14px 14px 20px}
+.card{background:var(--card);border-radius:18px;padding:18px;border:1px solid var(--border);margin-bottom:14px}
+.sec{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec h3{font-size:15px;font-weight:800;display:flex;align-items:center;gap:6px}
+.pill{padding:2px 9px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap;display:inline-block}
+.pill-green{background:var(--green-soft);color:var(--green)}.pill-red{background:var(--red-soft);color:var(--red)}.pill-yellow{background:var(--yellow-soft);color:var(--yellow)}.pill-blue{background:var(--blue-soft);color:var(--blue)}.pill-purple{background:var(--purple-soft);color:var(--purple)}.pill-accent{background:var(--accent-soft);color:var(--accent)}
+.btn{border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#d94010);color:#fff}
+.btn-secondary{background:var(--input);border:1px solid var(--border);color:var(--text)}
+.input{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--input);color:var(--text);font-size:13px;outline:none;box-sizing:border-box}
+textarea.input{resize:vertical}
+.input-search{display:flex;gap:8px;background:var(--input);border-radius:12px;padding:6px 12px;border:1px solid var(--border);align-items:center}
+.input-search input{flex:1;border:none;background:transparent;font-size:13px;outline:none;color:var(--text);padding:5px 0}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding:4px 0 env(safe-area-inset-bottom,5px);z-index:100}
+.nav-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0;cursor:pointer;opacity:.35;transition:all .2s}
+.nav-btn.active{opacity:1}.nav-btn span:first-child{font-size:18px}.nav-btn span:last-child{font-size:9px;font-weight:700;color:var(--sub)}.nav-btn.active span:last-child{color:var(--accent)}
+.banner{border-radius:20px;padding:22px 18px 16px;position:relative;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#ff9a56,#f05a28,#d94010)}
+.dark .banner{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.quick-btn{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 4px 9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .2s}
+.quick-btn:active{transform:scale(.95)}
+.task-card{padding:12px 14px;border-radius:14px;margin-bottom:8px;background:var(--input);border:1px solid var(--border)}
+.task-card.high{border-color:var(--red);border-left:4px solid var(--red)}.task-card.normal{border-left:4px solid var(--blue)}
+.task-status-btn{padding:4px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;background:var(--card);color:var(--sub)}
+.task-status-btn.a-todo{background:var(--blue-soft);color:var(--blue)}.task-status-btn.a-doing{background:var(--yellow-soft);color:var(--yellow)}.task-status-btn.a-done{background:var(--green-soft);color:var(--green)}
+.chat-scroll{max-height:320px;overflow-y:auto;padding:4px 0}
+.chat-avatar{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.chat-avatar.admin{background:linear-gradient(135deg,#f05a28,#d94010);color:#fff}
+.popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.popup-content{background:var(--card);border-radius:20px;max-width:440px;width:100%;overflow:hidden;max-height:85vh;display:flex;flex-direction:column}
+.news-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--input);border:1px solid var(--border);cursor:pointer;margin-bottom:8px;transition:all .2s}
+.news-item:active{transform:scale(.98)}
+.faq-item{border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:6px}
+.faq-item.open{background:var(--input);border-color:var(--purple)}
+.faq-btn{width:100%;background:none;border:none;padding:10px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left}
+.faq-answer{padding:0 12px 10px 34px;font-size:13px;line-height:1.5;opacity:.85;display:none}
+.faq-item.open .faq-answer{display:block}
+.faq-arrow{transition:transform .2s;color:var(--sub);font-size:14px}
+.faq-item.open .faq-arrow{transform:rotate(90deg)}
+.link-row{display:flex;align-items:center;gap:10px;padding:11px 0;cursor:pointer;border-bottom:1px solid var(--border)}
+.link-row:last-child{border-bottom:none}
+.alert-box{padding:10px 12px;border-radius:12px;background:var(--red-soft);display:flex;gap:8px;align-items:center;margin-top:8px}
+.mood-bar{border-radius:14px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fefce8,#fef9c3);border:1px solid #fde68a}
+.dark .mood-bar{background:linear-gradient(135deg,#141430,#181838);border-color:#222248}
+.mood-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.mood-btn:active{transform:scale(1.2)}
+.admin-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.admin-tab{padding:8px 14px;border-radius:10px;border:none;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:var(--card);color:var(--sub)}
+.admin-tab.active{background:var(--accent);color:#fff}
+@keyframes confFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.fade-in{animation:fadeIn .3s ease}
+.mono{font-family:'JetBrains Mono',monospace}
+/* AI Chat bubble */
+.ai-fab{position:fixed;bottom:76px;right:16px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:none;font-size:22px;cursor:pointer;z-index:99;box-shadow:0 4px 16px rgba(139,92,246,.4);display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.ai-fab:active{transform:scale(.9)}
+.ai-panel{position:fixed;bottom:136px;right:12px;width:calc(100% - 24px);max-width:400px;max-height:60vh;background:var(--card);border:1px solid var(--border);border-radius:18px;z-index:99;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.ai-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+.ai-msg{padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5;max-width:85%}
+.ai-msg.user{background:var(--accent-soft);color:var(--accent);align-self:flex-end;font-weight:600}
+.ai-msg.bot{background:var(--input);align-self:flex-start}
+.ai-msg.loading{opacity:.6;font-style:italic}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// TAP STORE PORTAL v5 — Supabase Edition
+// ═══════════════════════════════════════════════════════════════════════
+
+// ──────────────── SUPABASE CONFIG ────────────────
+// 👉 THAY 2 GIÁ TRỊ NÀY BẰNG CỦA BẠN (lấy từ Supabase → Settings → API)
+const SUPABASE_URL = 'https://ciliorjwrmsjxbykdmet.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpbGlvcmp3cm1zanhieWtkbWV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNTUzNjksImV4cCI6MjA4ODYzMTM2OX0.7kBXWLdXcmu01HHp1Jfmd8uHAP21VYO-IlFZrQ-vmdw';
+
+let sbClient = null;
+let isOnline = false;
+
+try {
+  if (SUPABASE_URL.includes('YOUR-PROJECT')) {
+    console.log('⚠️ Supabase chưa config — chạy offline mode');
+  } else {
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    isOnline = true;
+    console.log('✅ Supabase connected');
+  }
+} catch(e) { console.log('Supabase init error:', e); }
+
+// ── Supabase CRUD helpers ──
+async function sbGet(table, options = {}) {
+  if (!sbClient) return null;
+  let q = sbClient.from(table).select(options.select || '*');
+  if (options.order) q = q.order(options.order, { ascending: options.asc ?? true });
+  if (options.limit) q = q.limit(options.limit);
+  if (options.eq) q = q.eq(options.eq[0], options.eq[1]);
+  const { data, error } = await q;
+  if (error) console.error(`sbGet ${table}:`, error);
+  return data;
+}
+async function sbInsert(table, row) {
+  if (!sbClient) return null;
+  const { data, error } = await sbClient.from(table).insert(row).select();
+  if (error) console.error(`sbInsert ${table}:`, error);
+  return data?.[0];
+}
+async function sbUpdate(table, id, updates) {
+  if (!sbClient) return;
+  const { error } = await sbClient.from(table).update(updates).eq('id', id);
+  if (error) console.error(`sbUpdate ${table}:`, error);
+}
+async function sbDelete(table, id) {
+  if (!sbClient) return;
+  const { error } = await sbClient.from(table).delete().eq('id', id);
+  if (error) console.error(`sbDelete ${table}:`, error);
+}
+async function sbUpsertSetting(key, value) {
+  if (!sbClient) return;
+  await sbClient.from('app_settings').upsert({ key, value: JSON.stringify(value), updated_at: new Date().toISOString() });
+}
+async function sbGetSetting(key) {
+  if (!sbClient) return null;
+  const { data } = await sbClient.from('app_settings').select('value').eq('key', key).single();
+  return data ? JSON.parse(data.value) : null;
+}
+
+// ── Load all data from Supabase into DB on startup ──
+async function syncFromSupabase() {
+  if (!sbClient) return;
+  try {
+    const [leader, target, alerts, notes, news, tasks, skus, faq, chat, kudos] = await Promise.all([
+      sbGetSetting('shift_leader'),
+      sbGetSetting('month_target'),
+      sbGet('alerts', { order: 'created_at', asc: false }),
+      sbGet('today_notes', { order: 'created_at', asc: false }),
+      sbGet('news', { order: 'created_at', asc: false }),
+      sbGet('tasks', { order: 'created_at', asc: false }),
+      sbGet('skus', { order: 'name' }),
+      sbGet('faq'),
+      sbGet('chat_messages', { order: 'created_at', asc: true, limit: 100 }),
+      sbGet('kudos', { order: 'created_at', asc: false, limit: 20 }),
+    ]);
+    if (leader) DB.shiftLeader = leader;
+    if (target) DB.monthTarget = target;
+    if (alerts) DB.alerts = alerts.map(a => ({ id: a.id, text: a.text }));
+    if (notes) DB.todayNotes = notes.map(n => ({ id: n.id, text: n.text, priority: n.priority }));
+    if (news) {
+      // Also fetch interactions for each news
+      const interactions = await sbGet('news_interactions');
+      DB.news = news.map(n => ({
+        id: n.id, title: n.title, tag: n.tag, body: n.body, img: n.img,
+        time: timeAgo(n.created_at), canSignup: n.can_signup,
+        readBy: (interactions||[]).filter(i => i.news_id === n.id && i.action === 'read').map(i => i.user_name),
+        signups: (interactions||[]).filter(i => i.news_id === n.id && i.action === 'signup').map(i => i.user_name),
+      }));
+    }
+    if (tasks) DB.tasks = tasks.map(t => ({ id: t.id, title: t.title, assignedBy: t.assigned_by, assignedTo: t.assigned_to, due: t.due, status: t.status, priority: t.priority, note: t.note }));
+    if (skus) DB.skus = skus.map(s => ({ id: s.id, sku: s.sku, name: s.name, stock: s.stock, location: s.location, price: s.price, note: s.note }));
+    if (faq) DB.faq = faq.map(f => ({ id: f.id, q: f.question, a: f.answer, tag: f.tag }));
+    if (chat) DB.chat = chat.map(m => ({ id: m.id, user: m.user_name, text: m.text, time: fmtTime(m.created_at), role: m.role }));
+    if (kudos) DB.kudos = kudos.map(k => ({ id: k.id, from: k.from_user, to: k.to_user, msg: k.message, sticker: k.sticker, time: timeAgo(k.created_at) }));
+    render();
+  } catch(e) { console.error('Sync error:', e); }
+}
+
+function timeAgo(ts) {
+  const d = new Date(ts); const now = new Date();
+  const diff = Math.floor((now - d) / 60000);
+  if (diff < 1) return 'Vừa xong';
+  if (diff < 60) return diff + ' phút';
+  if (diff < 1440) return Math.floor(diff/60) + 'h';
+  return Math.floor(diff/1440) + ' ngày';
+}
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
+// ── Realtime subscriptions ──
+function setupRealtime() {
+  if (!sbClient) return;
+  sbClient.channel('portal-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => syncFromSupabase())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => syncFromSupabase())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'alerts' }, () => syncFromSupabase())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'today_notes' }, () => syncFromSupabase())
+    .subscribe();
+}
+
+// Init
+setTimeout(() => { syncFromSupabase(); setupRealtime(); }, 500);
+
+const DB={
+  shiftLeader:"Mai",
+  monthTarget:{month:3,target:8000,done:5420},
+  alerts:[{id:1,text:"Flash sale 15/3 dự kiến x2 đơn – chuẩn bị gấp đôi nhân lực!"},{id:2,text:"Xe GHN đang đến sớm 15 phút, chuẩn bị hàng!"}],
+  todayNotes:[
+    {id:1,text:"Kiểm tra kệ A1 – XV Lavender sắp hết, ưu tiên đóng gói mùi này trước",priority:"high"},
+    {id:2,text:"Khách VIP đặt 20 combo ToneLux – đóng riêng hộp đẹp",priority:"high"},
+    {id:3,text:"Nhắc anh em mặc đồng phục cam thứ 6",priority:"normal"},
+  ],
+  news:[
+    {id:1,title:"🎯 Flash Sale 15/3",tag:"Quan trọng",time:"Hôm nay",body:"Ngày 15/3 sẽ có chương trình Flash Sale lớn trên TikTok Shop. Dự kiến số đơn tăng gấp 2 lần. Anh em chuẩn bị tinh thần và sắp xếp nhân lực.",img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop",readBy:[],signups:[]},
+    {id:2,title:"📦 TAP Point 6 hoạt động",tag:"Tin mới",time:"Hôm qua",body:"Kho mới TAP Point 6 tại quận 9 chính thức hoạt động. Đăng ký tên nếu muốn chuyển sang kho mới.",img:"https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&h=300&fit=crop",readBy:[],signups:[],canSignup:true},
+    {id:3,title:"🏆 Top 3 nhân sự tháng 2",tag:"Vinh danh",time:"2 ngày",body:"Chúc mừng Mai (520 đơn), Hải (480 đơn) và Minh (450 đơn)! Phần thưởng cộng TAPPoint.",img:"",readBy:[],signups:[]},
+  ],
+  tasks:[
+    {id:1,title:"Kiểm kê tồn kho XV Lavender",assignedBy:"Trinh",assignedTo:"Hải",due:"10/03",status:"doing",priority:"high",note:"Đếm thực tế so với hệ thống, báo cáo trước 5h chiều"},
+    {id:2,title:"Chuẩn bị hàng Flash Sale 15/3",assignedBy:"Trinh",assignedTo:"Mai",due:"14/03",status:"todo",priority:"high",note:"Đóng gói sẵn 200 combo theo danh sách"},
+    {id:3,title:"Dọn dẹp kệ kho B2",assignedBy:"Mai",assignedTo:"Lan Anh",due:"11/03",status:"done",priority:"normal",note:"Sắp xếp lại theo nhóm sản phẩm"},
+    {id:4,title:"Test mẫu nhãn mới ToneLux",assignedBy:"Trinh",assignedTo:"Minh",due:"12/03",status:"todo",priority:"normal",note:"Dán thử 10 chai, chụp ảnh gửi feedback"},
+  ],
+  skus:[
+    {sku:"XV-LAV-100",name:"XV Lavender 100ml",stock:12,location:"Kệ A1",price:"89k",note:"Tồn thấp"},
+    {sku:"XV-ROS-100",name:"XV Rose 100ml",stock:45,location:"Kệ A2",price:"89k",note:""},
+    {sku:"XV-VAN-100",name:"XV Vanilla 100ml",stock:67,location:"Kệ A3",price:"89k",note:""},
+    {sku:"NC-PCH-50",name:"NC Peach 50ml",stock:23,location:"Kệ B1",price:"65k",note:""},
+    {sku:"NC-BER-50",name:"NC Berry 50ml",stock:8,location:"Kệ B2",price:"65k",note:"Tồn thấp"},
+    {sku:"TL-24A4",name:"ToneLux Personal Color 24a4",stock:15,location:"Gầm bàn PC",price:"120k",note:""},
+    {sku:"TL-12A4",name:"ToneLux Personal Color 12a4",stock:20,location:"Gầm bàn PC",price:"95k",note:""},
+    {sku:"SP-100-EMPTY",name:"Chai spray 100ml (rỗng)",stock:180,location:"Kệ C1",price:"—",note:"Vật tư"},
+  ],
+  faq:[
+    {q:"NC24a4, 3a4, 6a4, 12a4, 16a4 ở đâu?",a:"Tất cả tập Personal Color đặt dưới gầm bàn máy tính. Chưa rõ → nhắn nhóm.",tag:"ToneLux"},
+    {q:"XV 200ml là gì?",a:"Kho KHÔNG bán XV 200ml. Đây là đơn pre-order. Trưởng ca kiểm tra kỹ khi in đơn → báo bộ phận pha chế.",tag:"Quan trọng"},
+    {q:"Sản phẩm hết hàng?",a:"Kiểm tra kỹ trong kho. Nếu hết → báo chị Quỳnh khóa SP + nhắn khách đổi SP khác.",tag:"Quy trình"},
+    {q:"Còn nước không?",a:"Trước khi dán mùi hương, kiểm tra can còn đủ nước & ước lượng số lượng hợp lý.",tag:"Quy trình"},
+    {q:"Máy in hỏng",a:"Báo trưởng ca → liên hệ chị Quỳnh. Dùng máy in dự phòng bàn số 2.",tag:"Sự cố"},
+    {q:"Lấy băng keo ở đâu?",a:"Kệ phụ kiện cạnh bàn đóng gói. Hết → báo trưởng ca bổ sung.",tag:"Vật tư"},
+  ],
+  chat:[
+    {id:1,user:"Trinh",text:"Anh em nhớ kiểm tra hàng Flash Sale trước 12h trưa nha!",time:"08:30",role:"admin"},
+    {id:2,user:"Mai",text:"Em đã check xong kệ A, còn thiếu 20 chai XV Lavender",time:"09:15",role:"staff"},
+    {id:3,user:"Hải",text:"Em bổ sung thêm từ kho B2 rồi ạ 👍",time:"09:22",role:"staff"},
+    {id:4,user:"Trinh",text:"Good job! Hải cộng thêm 5 TAPPoint nhé 🎯",time:"09:25",role:"admin"},
+  ],
+  moods:{"😃":8,"😐":2,"😫":1},
+  kudos:[{from:"Trinh",to:"Hải",msg:"Cảm ơn anh đóng 50 đơn gấp!",sticker:"🔥",time:"2h"},{from:"Lan Anh",to:"Mai",msg:"Chị hướng dẫn em tận tình!",sticker:"💛",time:"5h"}],
+  newMembers:[{name:"Lan Anh",role:"Nhân viên kho",funFact:"Chuyên gia săn sale Shopee 🛒",highFives:8}],
+  geminiKey:"", // Admin sets this
+};
+
+let S={tab:"home",dark:false,admin:false,adminTab:"overview",mood:null,popup:null,openFaq:null,confetti:false,welcomeFived:{},aiOpen:false,aiMsgs:[{role:"bot",text:"Xin chào! Mình là trợ lý AI của TAP Store. Hỏi mình bất cứ gì về quy trình, sản phẩm, hoặc công việc nhé! 🤖"}],aiLoading:false};
+
+const QUOTES=["Mỗi đơn hàng là lời cảm ơn từ khách 💛","Teamwork makes the dream work ✨","Năng lượng tích cực lan tỏa từ chính bạn 🌱","Team hạnh phúc = Khách hạnh phúc 🎯"];
+const DAYS=["CN","T2","T3","T4","T5","T6","T7"];
+const USER="Bạn";
+
+function fmtDate(){const d=new Date();return DAYS[d.getDay()]+", "+d.getDate()+"/"+(d.getMonth()+1)}
+function greet(){const h=new Date().getHours();if(h<12)return{t:"Chào buổi sáng",i:"☀️",tip:"Uống nhiều nước nhé!"};if(h<17)return{t:"Chào buổi chiều",i:"🌤️",tip:"Rà soát đơn cuối ngày!"};return{t:"Chào buổi tối",i:"🌙",tip:"Nghỉ ngơi thật tốt!"}}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function pillCls(tag){return{"ToneLux":"pill-purple","Quan trọng":"pill-red","Quy trình":"pill-blue","Hàng ngày":"pill-green","Sự cố":"pill-red","Vật tư":"pill-yellow","Tin mới":"pill-blue","Vinh danh":"pill-yellow"}[tag]||"pill-blue"}
+
+// ═══════════════════════════════════════════════════════════════════════
+function render(){
+  document.body.className=S.dark?"dark":"";
+  const app=document.getElementById("app");
+  if(S.admin){app.innerHTML=renderAdmin();return}
+  let h=`<div class="wrap fade-in">`+renderHeader();
+  if(S.tab==="home") h+=renderBanner()+renderMood()+renderQuickActions()+renderShiftLeader()+renderTarget()+renderTodayNotes()+renderSKU()+renderFAQ();
+  else if(S.tab==="tasks") h+=renderTasks();
+  else if(S.tab==="community") h+=renderChat()+renderKudos()+renderWelcome()+renderNews();
+  else if(S.tab==="tools") h+=renderSKU()+renderFAQ()+renderLinks();
+  else if(S.tab==="me") h+=renderProfile();
+  h+=`</div>`+renderBottomNav();
+  if(S.popup!==null) h+=renderPopup();
+  if(S.confetti) h+=renderConfetti();
+  // AI fab + panel
+  h+=`<button class="ai-fab" onclick="S.aiOpen=!S.aiOpen;render()" title="Trợ lý AI">🤖</button>`;
+  if(S.aiOpen) h+=renderAIPanel();
+  app.innerHTML=h;
+  // Auto scroll
+  const cs=document.getElementById("chatScroll");if(cs)cs.scrollTop=cs.scrollHeight;
+  const ai=document.getElementById("aiScroll");if(ai)ai.scrollTop=ai.scrollHeight;
+}
+
+function renderHeader(){
+  return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:7px">
+      <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#d94010);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:900">T</div>
+      <div><div style="font-size:14px;font-weight:900">TAP Store</div><div style="font-size:9px;color:var(--sub);font-weight:600">Internal Portal</div></div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button onclick="S.admin=true;render()" style="width:32px;height:32px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer" title="Admin">⚙️</button>
+      <div style="width:32px;height:32px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px">🔔</div>
+    </div></div>`}
+
+function renderBanner(){const g=greet();return `<div class="banner"><div style="position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.07)"></div><div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1"><div><div style="font-size:12px;color:rgba(255,255,255,.7)">${fmtDate()}</div><h1 style="font-size:21px;font-weight:800;color:#fff;margin:3px 0">${g.i} ${g.t}, Trinh!</h1><p style="font-size:12px;color:rgba(255,255,255,.75)">${g.tip}</p></div><button onclick="S.dark=!S.dark;render()" style="background:rgba(255,255,255,.15);border:none;border-radius:11px;width:36px;height:36px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">${S.dark?"☀️":"🌙"}</button></div><div style="margin-top:10px;padding:7px 12px;background:rgba(255,255,255,.12);border-radius:10px;position:relative;z-index:1"><p style="font-size:12px;color:#fff;font-style:italic">✨ ${esc(QUOTES[new Date().getMinutes()%QUOTES.length])}</p></div></div>`}
+
+function renderMood(){
+  if(S.mood){const t=Object.values(DB.moods).reduce((a,b)=>a+b,0);const hp=Math.round((DB.moods["😃"]/t)*100);return `<div class="mood-bar"><span style="font-size:26px">${S.mood}</span><div style="flex:1"><div style="font-size:12px;font-weight:700">Cảm ơn! 💛</div><div style="font-size:12px;color:var(--sub)">Hôm nay <strong style="color:var(--green)">${hp}%</strong> team đang sung!</div></div></div>`}
+  return `<div class="mood-bar"><span style="font-size:13px;font-weight:700;flex:1">Hôm nay bạn thế nào?</span>${["😃","😐","😫"].map(m=>`<button class="mood-btn" onclick="S.mood='${m}';DB.moods['${m}']++;render()">${m}</button>`).join("")}</div>`}
+
+// Quick Actions — NOW FUNCTIONAL
+function renderQuickActions(){
+  return `<div class="quick-grid">
+    <button class="quick-btn" onclick="scrollToEl('skuSection')"><div style="width:38px;height:38px;border-radius:11px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;font-size:18px">🔍</div><span style="font-size:11px;font-weight:700;color:var(--sub)">Tra SKU</span></button>
+    <button class="quick-btn" onclick="S.aiOpen=true;render()"><div style="width:38px;height:38px;border-radius:11px;background:rgba(239,68,68,.1);display:flex;align-items:center;justify-content:center;font-size:18px">🚨</div><span style="font-size:11px;font-weight:700;color:var(--sub)">Hỏi AI</span></button>
+    <button class="quick-btn" onclick="S.tab='tasks';render()"><div style="width:38px;height:38px;border-radius:11px;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;font-size:18px">✅</div><span style="font-size:11px;font-weight:700;color:var(--sub)">Task</span></button>
+    <button class="quick-btn" onclick="S.tab='community';render()"><div style="width:38px;height:38px;border-radius:11px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:18px">💬</div><span style="font-size:11px;font-weight:700;color:var(--sub)">Chat</span></button>
+  </div>`}
+
+function scrollToEl(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},50)}
+
+function renderShiftLeader(){return `<div class="card"><div style="display:flex;align-items:center;gap:12px"><div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex-shrink:0">👑</div><div style="flex:1"><div style="font-size:11px;color:var(--sub);font-weight:600;letter-spacing:.5px">TRƯỞNG CA HÔM NAY</div><div style="font-size:20px;font-weight:900">${esc(DB.shiftLeader)}</div></div></div></div>`}
+
+function renderTarget(){
+  const{target,done,month}=DB.monthTarget;const pct=target>0?Math.round((done/target)*100):0;const tree=pct<25?"🌱":pct<50?"🌿":pct<75?"🌳":"🌲";const dL=new Date(new Date().getFullYear(),month,0).getDate()-new Date().getDate();const need=Math.max(0,target-done);
+  let h=`<div class="card"><div class="sec"><h3>🎯 Target Tháng ${month}</h3></div><div style="text-align:center;padding-bottom:16px"><div style="font-size:48px;line-height:1;margin-bottom:4px">${tree}</div><div style="display:flex;align-items:baseline;justify-content:center;gap:4px"><span style="font-size:34px;font-weight:900;background:linear-gradient(135deg,#10b981,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${done.toLocaleString()}</span><span style="font-size:15px;color:var(--sub)">/ ${target.toLocaleString()}</span></div><div style="height:10px;border-radius:5px;background:var(--muted);overflow:hidden;margin:10px auto 0;max-width:260px"><div style="height:100%;width:${Math.min(pct,100)}%;border-radius:5px;background:linear-gradient(90deg,#10b981,#34d399)"></div></div><div style="font-size:12px;color:var(--sub);margin-top:8px">Còn <strong style="color:var(--text)">${dL} ngày</strong> · Cần thêm <strong style="color:var(--accent)">${need.toLocaleString()}</strong> đơn</div>`;
+  if(pct>=100)h+=`<div style="margin-top:12px;padding:10px;border-radius:12px;background:var(--green-soft)"><span style="font-size:13px;font-weight:800;color:var(--green)">🎉 Team đã về đích!</span></div>`;
+  h+=`</div>`;DB.alerts.forEach(a=>{h+=`<div class="alert-box"><span>🚨</span><span style="font-size:12px;font-weight:700;color:var(--red)">${esc(a.text)}</span></div>`});return h+`</div>`}
+
+// CHÚ Ý HÔM NAY (replaces schedule)
+function renderTodayNotes(){
+  let h=`<div class="card"><div class="sec"><h3>⚡ Chú Ý Hôm Nay</h3></div>`;
+  if(!DB.todayNotes.length) h+=`<div style="text-align:center;padding:16px;color:var(--sub)">Không có ghi chú nào</div>`;
+  DB.todayNotes.forEach(n=>{
+    const isHigh=n.priority==="high";
+    h+=`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;margin-bottom:6px;background:${isHigh?"var(--red-soft)":"var(--input)"};border:1px solid ${isHigh?"var(--red)20":"var(--border)"}">
+      <span style="font-size:14px;flex-shrink:0">${isHigh?"🔴":"🟡"}</span>
+      <span style="font-size:13px;font-weight:${isHigh?700:600};line-height:1.4">${esc(n.text)}</span>
+    </div>`;
+  });return h+`</div>`}
+
+function renderSKU(){return `<div class="card" id="skuSection"><div class="sec"><h3>🔍 Tra Cứu SKU</h3></div><div class="input-search"><span style="font-size:15px">📦</span><input id="skuSearch" placeholder="Gõ mã SKU hoặc tên sản phẩm..." oninput="searchSKU(this.value)"><button onclick="document.getElementById('skuSearch').value='';searchSKU('')" style="background:none;border:none;color:var(--sub);cursor:pointer">✕</button></div><div id="skuResults"></div></div>`}
+
+function renderFAQ(){
+  let h=`<div class="card"><div class="sec"><h3>📖 Cẩm Nang Bỏ Túi</h3></div><div class="input-search" style="margin-bottom:12px"><span style="font-size:14px">🔍</span><input id="faqSearch" placeholder="Tìm: máy in, băng keo..." oninput="searchFAQ(this.value)"></div><div id="faqList">`;
+  DB.faq.forEach((f,i)=>{const o=S.openFaq===i;h+=`<div class="faq-item ${o?"open":""}"><button class="faq-btn" onclick="S.openFaq=S.openFaq===${i}?null:${i};render()"><span class="faq-arrow">›</span><span style="flex:1;font-size:13px;font-weight:700;line-height:1.3">${esc(f.q)}</span><span class="pill ${pillCls(f.tag)}">${f.tag}</span></button><div class="faq-answer">${esc(f.a)}</div></div>`});
+  return h+`</div></div>`}
+
+// TASKS — Full tab
+function renderTasks(){
+  const labels={todo:"📋 Chưa làm",doing:"🔄 Đang làm",done:"✅ Xong"};const colors={todo:"pill-blue",doing:"pill-yellow",done:"pill-green"};const btnCls={todo:"a-todo",doing:"a-doing",done:"a-done"};
+  const counts={todo:DB.tasks.filter(t=>t.status==="todo").length,doing:DB.tasks.filter(t=>t.status==="doing").length,done:DB.tasks.filter(t=>t.status==="done").length};
+  let h=`<div class="card"><div class="sec"><h3>✅ Bảng Công Việc</h3><span class="pill pill-accent">${DB.tasks.length} task</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">${["todo","doing","done"].map(s=>`<div style="flex:1;text-align:center;padding:8px;border-radius:10px;background:var(--input)"><div style="font-size:18px;font-weight:900;color:${s==="done"?"var(--green)":s==="doing"?"var(--yellow)":"var(--blue)"}">${counts[s]}</div><div style="font-size:11px;color:var(--sub)">${labels[s]}</div></div>`).join("")}</div>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:12px">Tất cả task giao nhau — ai cũng thấy, cập nhật trạng thái trực tiếp</p>`;
+  if(!DB.tasks.length)h+=`<div style="text-align:center;padding:20px;color:var(--sub)">Chưa có task</div>`;
+  DB.tasks.forEach(t=>{
+    h+=`<div class="task-card ${t.priority}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div style="font-size:14px;font-weight:800;flex:1">${esc(t.title)}</div><span class="pill ${colors[t.status]}">${labels[t.status]}</span></div>`;
+    if(t.note)h+=`<p style="font-size:12px;color:var(--sub);margin:0 0 8px;line-height:1.4">${esc(t.note)}</p>`;
+    h+=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><span class="pill pill-accent">Giao: ${esc(t.assignedBy)}</span><span class="pill pill-purple">→ ${esc(t.assignedTo)}</span><span class="pill pill-yellow">Hạn: ${t.due}</span>${t.priority==="high"?'<span class="pill pill-red">Ưu tiên</span>':""}</div>
+    <div style="display:flex;gap:6px">${["todo","doing","done"].map(s=>`<button class="task-status-btn ${t.status===s?btnCls[s]:""}" onclick="DB.tasks.find(x=>x.id===${t.id}).status='${s}';render()">${labels[s]}</button>`).join("")}</div></div>`;
+  });return h+`</div>`}
+
+// CHAT
+function renderChat(){
+  let h=`<div class="card"><div class="sec"><h3>💬 Chat Nội Bộ</h3></div><p style="font-size:11px;color:var(--sub);margin:-6px 0 10px">Thay thế Zalo/Messenger</p><div class="chat-scroll" id="chatScroll">`;
+  DB.chat.forEach(m=>{const isA=m.role==="admin";const hue=(m.user.charCodeAt(0)*37)%360;h+=`<div style="display:flex;gap:8px;margin-bottom:10px;align-items:flex-start"><div class="chat-avatar ${isA?"admin":""}" style="${isA?"":"background:hsl("+hue+",45%,"+(S.dark?25:85)+"%);color:var(--text)"}">${m.user[0]}</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:12px;font-weight:800;${isA?"color:var(--accent)":""}">${esc(m.user)}</span>${isA?'<span class="pill pill-accent">Admin</span>':""}<span class="mono" style="font-size:11px;color:var(--muted)">${m.time}</span></div><p style="font-size:13px;margin:3px 0 0;line-height:1.4;opacity:.9">${esc(m.text)}</p></div></div>`});
+  return h+`</div><div style="display:flex;gap:8px;margin-top:12px"><input id="chatInput" class="input" style="flex:1;border-radius:12px" placeholder="Nhắn tin..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()" style="padding:10px 16px">Gửi</button></div></div>`}
+
+function renderKudos(){let h=`<div class="card"><div class="sec"><h3>🙌 Vinh Danh</h3></div><div style="background:var(--input);border-radius:14px;padding:10px;border:1px solid var(--border);margin-bottom:12px"><div style="display:flex;gap:6px"><input id="kudosInput" class="input" style="flex:1;border:none;background:transparent" placeholder="Cảm ơn ai đó..."><button class="btn btn-primary" onclick="sendKudos()">Gửi 💛</button></div></div>`;DB.kudos.forEach(k=>{h+=`<div style="display:flex;gap:8px;padding:10px;border-radius:12px;background:var(--input);border:1px solid var(--border);margin-bottom:8px"><span style="font-size:20px">${k.sticker}</span><div style="flex:1"><div style="font-size:12px"><strong style="color:var(--accent)">${esc(k.from)}</strong> → <strong style="color:var(--blue)">${esc(k.to)}</strong></div><p style="font-size:12px;color:var(--sub);margin:2px 0 0">${esc(k.msg)}</p></div></div>`});return h+`</div>`}
+
+function renderWelcome(){if(!DB.newMembers.length)return"";let h=`<div class="card"><div class="sec"><h3>👋 Thành Viên Mới</h3></div>`;DB.newMembers.forEach((m,i)=>{const ini=m.name[0]+(m.name.split(" ").pop()||"")[0];const f=S.welcomeFived[i];h+=`<div style="padding:14px;border-radius:14px;background:${S.dark?"linear-gradient(135deg,#0e1628,#121e30)":"linear-gradient(135deg,#eef6ff,#dbeafe)"};border:1px solid ${S.dark?"#1a2e40":"#93c5fd"}"><div style="display:flex;gap:12px;align-items:center;margin-bottom:10px"><div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:900;flex-shrink:0">${ini}</div><div><div style="font-size:15px;font-weight:900">${esc(m.name)}</div><div style="font-size:12px;color:var(--sub)">${esc(m.role)}</div><div style="font-size:12px;opacity:.8">🎯 ${esc(m.funFact)}</div></div></div><button onclick="S.welcomeFived[${i}]=true;S.confetti=true;setTimeout(()=>{S.confetti=false;render()},3000);render()" ${f?"disabled":""} style="width:100%;padding:9px 0;border-radius:11px;border:none;background:${f?(S.dark?"#0e1e16":"#dcfce7"):"linear-gradient(135deg,#fbbf24,#f59e0b)"};color:${f?"var(--green)":"#fff"};font-size:13px;font-weight:800;cursor:${f?"default":"pointer"}">${f?`✅ Đã chào mừng! (${m.highFives+1})`:`🙌 Chào mừng ${esc(m.name)}!`}</button></div>`});return h+`</div>`}
+
+// NEWS with Read + Signup
+function renderNews(){
+  let h=`<div class="card"><div class="sec"><h3>📰 Tin Tức Nội Bộ</h3></div>`;
+  DB.news.forEach((n,i)=>{
+    const isRead=n.readBy.includes(USER);
+    h+=`<div class="news-item" style="${isRead?"opacity:.7":""}">
+      ${n.img?`<img src="${n.img}" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'" onclick="S.popup=${i};render()">`:""}
+      <div style="flex:1;min-width:0" onclick="S.popup=${i};render()">
+        <p style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(n.title)}</p>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:3px">
+          <span style="font-size:11px;color:var(--muted)">${n.time}</span>
+          ${isRead?'<span class="pill pill-green" style="font-size:10px">✓ Đã đọc</span>':""}
+          ${n.signups?.length?`<span class="pill pill-purple" style="font-size:10px">${n.signups.length} đăng ký</span>`:""}
+        </div>
+      </div>
+      <span class="pill ${pillCls(n.tag)}">${n.tag}</span>
+    </div>`;
+  });return h+`</div>`}
+
+// NEWS POPUP with Read + Signup
+function renderPopup(){
+  if(S.popup===null)return"";
+  const n=DB.news[S.popup];if(!n)return"";
+  const isRead=n.readBy.includes(USER);const isSigned=n.signups?.includes(USER);
+  return `<div class="popup-overlay" onclick="S.popup=null;render()"><div class="popup-content" onclick="event.stopPropagation()">
+    ${n.img?`<img src="${n.img}" style="width:100%;height:180px;object-fit:cover" onerror="this.style.display='none'">`:""}
+    <div style="padding:20px;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><h2 style="font-size:18px;font-weight:900;flex:1">${esc(n.title)}</h2><button onclick="S.popup=null;render()" style="background:none;border:none;font-size:18px;color:var(--sub);cursor:pointer;padding:0 0 0 10px">✕</button></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px"><span class="pill ${pillCls(n.tag)}">${n.tag}</span><span style="font-size:12px;color:var(--sub)">${n.time}</span></div>
+      <p style="font-size:14px;line-height:1.7;opacity:.9;margin-bottom:16px">${esc(n.body)}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="markRead(${S.popup})" class="btn ${isRead?"btn-secondary":"btn-primary"}" ${isRead?"disabled":""}>${isRead?"✓ Đã đọc":"👁️ Đánh dấu đã đọc"}</button>
+        ${n.canSignup?`<button onclick="signupNews(${S.popup})" class="btn ${isSigned?"btn-secondary":"btn-primary"}" style="background:${isSigned?"var(--green-soft)":"linear-gradient(135deg,#8b5cf6,#6d28d9)"};color:${isSigned?"var(--green)":"#fff"};border:${isSigned?"1px solid var(--green)":"none"}" ${isSigned?"disabled":""}>${isSigned?"✅ Đã đăng ký":"✋ Đăng ký tham gia"}</button>`:""}
+      </div>
+      ${n.signups?.length?`<div style="margin-top:12px;padding:10px 14px;border-radius:12px;background:var(--input);border:1px solid var(--border)"><div style="font-size:12px;font-weight:700;margin-bottom:6px">👥 Đã đăng ký (${n.signups.length}):</div><div style="display:flex;flex-wrap:wrap;gap:4px">${n.signups.map(s=>`<span class="pill pill-purple">${esc(s)}</span>`).join("")}</div></div>`:""}
+      ${n.readBy?.length?`<div style="margin-top:8px;font-size:11px;color:var(--sub)">👁️ ${n.readBy.length} người đã đọc</div>`:""}
+    </div>
+  </div></div>`}
+
+function renderConfetti(){const cols=["#ff6b6b","#feca57","#48dbfb","#ff9ff3","#54a0ff","#10b981","#f05a28"];let h=`<div style="position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden">`;for(let i=0;i<40;i++){h+=`<div style="position:absolute;top:-16px;left:${Math.random()*100}%;width:${6+Math.random()*5}px;height:${4+Math.random()*3}px;background:${cols[i%cols.length]};border-radius:2px;transform:rotate(${Math.random()*360}deg);animation:confFall ${1.5+Math.random()*1.5}s ${Math.random()*.8}s ease-in forwards"></div>`}return h+`</div>`}
+
+function renderLinks(){
+  const ls=[{i:"⏰",l:"Tanca (Chấm công / Nghỉ phép / Bảng lương)",d:"Mở app Tanca"},{i:"🎯",l:"TAPPoint (Điểm nội bộ)",d:"Xem file Excel"},{i:"📋",l:"Checklist mở/đóng kho",d:"Quy trình hàng ngày"},{i:"📚",l:"Tài liệu đào tạo",d:"SOP & hướng dẫn"},{i:"💡",l:"Góp ý cải tiến",d:"Đề xuất ý tưởng"},{i:"📞",l:"Liên hệ nội bộ",d:"SĐT & Zalo team"}];
+  let h=`<div class="card"><div class="sec"><h3>🔗 Liên Kết Nhanh</h3></div>`;ls.forEach((t,i)=>{h+=`<div class="link-row"><div style="width:36px;height:36px;border-radius:10px;background:hsl(${i*45},45%,${S.dark?20:92}%);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${t.i}</div><div style="flex:1"><div style="font-size:13px;font-weight:700">${t.l}</div><div style="font-size:12px;color:var(--sub)">${t.d}</div></div><span style="color:var(--muted)">›</span></div>`});return h+`</div>`}
+
+function renderProfile(){return `<div class="card" style="text-align:center"><div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,var(--accent),#d94010);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:900;margin:0 auto 10px">T</div><div style="font-size:18px;font-weight:900">Trinh</div><div style="font-size:12px;color:var(--sub)">Quản lý · TAP Store</div></div><div class="card"><div class="link-row" onclick="S.admin=true;render()"><span style="font-size:16px">⚙️</span><span style="flex:1;font-size:13px;font-weight:600">Admin Panel</span><span style="color:var(--muted)">›</span></div><div class="link-row"><span style="font-size:16px">⏰</span><span style="flex:1;font-size:13px;font-weight:600">Mở Tanca</span><span style="color:var(--muted)">›</span></div><div class="link-row"><span style="font-size:16px">🎯</span><span style="flex:1;font-size:13px;font-weight:600">Xem TAPPoint</span><span style="color:var(--muted)">›</span></div><div class="link-row"><span style="font-size:16px">🎨</span><span style="flex:1;font-size:13px;font-weight:600">Giao diện</span><span style="color:var(--muted)">›</span></div></div>`}
+
+function renderBottomNav(){
+  const tabs=[{id:"home",i:"🏠",l:"Trang chủ"},{id:"tasks",i:"✅",l:"Task"},{id:"community",i:"💬",l:"Cộng đồng"},{id:"tools",i:"🔧",l:"Công cụ"},{id:"me",i:"👤",l:"Tôi"}];
+  return `<div class="bottom-nav">${tabs.map(t=>`<button class="nav-btn ${S.tab===t.id?"active":""}" onclick="S.tab='${t.id}';S.openFaq=null;render()"><span>${t.i}</span><span>${t.l}</span></button>`).join("")}</div>`}
+
+// ═══════════════════════════════════════════════════════════════════════
+// AI PANEL (Gemini Integration)
+// ═══════════════════════════════════════════════════════════════════════
+function renderAIPanel(){
+  return `<div class="ai-panel"><div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🤖</span><div><div style="font-size:14px;font-weight:800">Trợ Lý AI</div><div style="font-size:10px;color:var(--sub)">${DB.geminiKey?"Gemini (local key)":isOnline?"Gemini (server)":"Offline (FAQ)"}</div></div></div><button onclick="S.aiOpen=false;render()" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--sub)">✕</button></div>
+  <div class="ai-msgs" id="aiScroll">${S.aiMsgs.map(m=>`<div class="ai-msg ${m.role==="user"?"user":"bot"} ${m.loading?"loading":""}">${esc(m.text)}</div>`).join("")}</div>
+  <div style="padding:10px;border-top:1px solid var(--border);display:flex;gap:8px"><input id="aiInput" class="input" style="flex:1;border-radius:12px" placeholder="Hỏi về SOP, sản phẩm, quy trình..." onkeydown="if(event.key==='Enter')sendAI()"><button class="btn btn-primary" onclick="sendAI()" style="padding:10px 14px;background:linear-gradient(135deg,#8b5cf6,#6d28d9)">Gửi</button></div></div>`}
+
+async function sendAI(){
+  const inp=document.getElementById("aiInput");if(!inp||!inp.value.trim())return;
+  const q=inp.value.trim();
+  S.aiMsgs.push({role:"user",text:q});
+  S.aiMsgs.push({role:"bot",text:"Đang suy nghĩ...",loading:true});
+  S.aiLoading=true;render();
+
+  // Build context from DB
+  const context=`Bạn là trợ lý AI của TAP Store (cửa hàng bán xịt phòng, nước hoa, sản phẩm ToneLux Personal Color). Trả lời ngắn gọn bằng tiếng Việt.
+
+THÔNG TIN HIỆN TẠI:
+- Trưởng ca: ${DB.shiftLeader}
+- Target tháng ${DB.monthTarget.month}: ${DB.monthTarget.done}/${DB.monthTarget.target} đơn
+- Thông báo: ${DB.alerts.map(a=>a.text).join("; ")}
+- Chú ý: ${DB.todayNotes.map(n=>n.text).join("; ")}
+
+FAQ:
+${DB.faq.map(f=>"Q: "+f.q+" → A: "+f.a).join("\n")}
+
+SKU hàng hoá:
+${DB.skus.map(s=>s.sku+" | "+s.name+" | Tồn:"+s.stock+" | Vị trí:"+s.location).join("\n")}`;
+
+  if(DB.geminiKey || isOnline){
+    try{
+      let answer;
+      // Try Vercel serverless first (key hidden server-side)
+      if(isOnline && !DB.geminiKey) {
+        const res = await fetch('/api/gemini', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({prompt: context+"\n\nCâu hỏi nhân viên: "+q})
+        });
+        const data = await res.json();
+        answer = data.answer || data.error || 'Không nhận được phản hồi.';
+      } else {
+        // Direct Gemini call (with local key)
+        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${DB.geminiKey}`,{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({contents:[{role:"user",parts:[{text:context+"\n\nCâu hỏi nhân viên: "+q}]}],generationConfig:{maxOutputTokens:500}})
+        });
+        const data=await res.json();
+        answer=data?.candidates?.[0]?.content?.parts?.[0]?.text||"Không nhận được phản hồi.";
+      }
+      S.aiMsgs.pop();S.aiMsgs.push({role:"bot",text:answer});
+    }catch(e){S.aiMsgs.pop();S.aiMsgs.push({role:"bot",text:"Lỗi kết nối API: "+e.message})}
+  }else{
+    // Offline: search FAQ + SKU
+    const lq=q.toLowerCase();
+    const faqMatch=DB.faq.find(f=>(f.q+f.a).toLowerCase().includes(lq));
+    const skuMatch=DB.skus.find(s=>(s.sku+s.name).toLowerCase().includes(lq));
+    let answer="";
+    if(faqMatch)answer+=`📖 ${faqMatch.q}\n→ ${faqMatch.a}\n\n`;
+    if(skuMatch)answer+=`📦 ${skuMatch.name} (${skuMatch.sku})\nTồn: ${skuMatch.stock} | Vị trí: ${skuMatch.location} | Giá: ${skuMatch.price}`;
+    if(!answer)answer="Mình chưa tìm thấy thông tin. Hãy hỏi trưởng ca hoặc nhắn nhóm nhé!\n\n💡 Tip: Thêm Gemini API Key trong Admin Panel để mình thông minh hơn!";
+    S.aiMsgs.pop();S.aiMsgs.push({role:"bot",text:answer});
+  }
+  S.aiLoading=false;render();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ADMIN PANEL
+// ═══════════════════════════════════════════════════════════════════════
+function renderAdmin(){
+  const t=S.adminTab;
+  const tabs=[{id:"overview",i:"📋",l:"Tổng quan"},{id:"tasks",i:"✅",l:"Giao việc"},{id:"news",i:"📰",l:"Tin tức"},{id:"sku",i:"📦",l:"SKU"},{id:"faq",i:"📖",l:"FAQ"}];
+  let h=`<div class="wrap-admin fade-in"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="display:flex;align-items:center;gap:8px"><div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:900">A</div><div><div style="font-size:15px;font-weight:900">Admin Panel</div><div style="font-size:10px;color:var(--sub);font-weight:600">TAP Store Management</div></div></div><button class="btn btn-secondary" onclick="S.admin=false;render()" style="font-size:11px">← Về Staff</button></div>
+  <div class="admin-tabs">${tabs.map(tb=>`<button class="admin-tab ${t===tb.id?"active":""}" onclick="S.adminTab='${tb.id}';render()">${tb.i} ${tb.l}</button>`).join("")}</div>`;
+
+  if(t==="overview"){
+    h+=`<div class="card"><div class="sec"><h3>👑 Trưởng Ca</h3></div><input class="input" value="${esc(DB.shiftLeader)}" style="font-size:14px;font-weight:700" oninput="DB.shiftLeader=this.value;if(sbClient)sbUpsertSetting('shift_leader',this.value)"><p style="font-size:11px;color:var(--sub);margin-top:8px">Tự động cập nhật trên trang nhân viên</p></div>`;
+    h+=`<div class="card"><div class="sec"><h3>🎯 Target Tháng ${DB.monthTarget.month}</h3></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><label style="font-size:11px;color:var(--sub)">Mục tiêu</label><input type="number" class="input mono" value="${DB.monthTarget.target}" oninput="DB.monthTarget.target=+this.value;if(sbClient)sbUpsertSetting('month_target',DB.monthTarget)" style="margin-top:4px"></div><div><label style="font-size:11px;color:var(--sub)">Đã đạt</label><input type="number" class="input mono" value="${DB.monthTarget.done}" oninput="DB.monthTarget.done=+this.value;if(sbClient)sbUpsertSetting('month_target',DB.monthTarget)" style="margin-top:4px"></div></div></div>`;
+    h+=`<div class="card"><div class="sec"><h3>🚨 Thông Báo Đỏ</h3></div>`;DB.alerts.forEach((a,i)=>{h+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><span style="flex:1;font-size:13px;color:var(--red);font-weight:600">${esc(a.text)}</span><button onclick="DB.alerts.splice(${i},1);render()" style="background:none;border:none;cursor:pointer;font-size:14px">🗑️</button></div>`});h+=`<div style="display:flex;gap:8px;margin-top:10px"><input id="newAlert" class="input" style="flex:1" placeholder="Thêm thông báo..."><button class="btn btn-primary" onclick="addAlert()">Thêm</button></div></div>`;
+    h+=`<div class="card"><div class="sec"><h3>⚡ Chú Ý Hôm Nay</h3></div>`;DB.todayNotes.forEach((n,i)=>{h+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><span>${n.priority==="high"?"🔴":"🟡"}</span><span style="flex:1;font-size:13px;font-weight:600">${esc(n.text)}</span><button onclick="DB.todayNotes.splice(${i},1);render()" style="background:none;border:none;cursor:pointer;font-size:14px">🗑️</button></div>`});h+=`<div style="display:flex;gap:8px;margin-top:10px"><input id="newNote" class="input" style="flex:1" placeholder="Thêm ghi chú..."><select id="notePriority" class="input" style="width:auto"><option value="high">🔴 Quan trọng</option><option value="normal">🟡 Bình thường</option></select><button class="btn btn-primary" onclick="addNote()">Thêm</button></div></div>`;
+    h+=`<div class="card"><div class="sec"><h3>🤖 Gemini API Key</h3></div><input class="input mono" value="${esc(DB.geminiKey)}" placeholder="Dán API Key tại đây..." oninput="DB.geminiKey=this.value" style="font-size:12px"><p style="font-size:11px;color:var(--sub);margin-top:8px">Lấy key tại <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--blue)">aistudio.google.com/apikey</a> (miễn phí)</p></div>`;
+  }
+  else if(t==="tasks"){
+    h+=`<div class="card"><div class="sec"><h3>➕ Giao Việc Mới</h3></div><input id="atTitle" class="input" placeholder="Tiêu đề" style="margin-bottom:8px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><input id="atTo" class="input" placeholder="Giao cho"><input id="atDue" class="input" placeholder="Hạn (15/03)"></div><input id="atNote" class="input" placeholder="Ghi chú..." style="margin-bottom:8px"><div style="display:flex;gap:8px"><select id="atPri" class="input" style="width:auto"><option value="high">🔴 Ưu tiên</option><option value="normal" selected>🟡 Thường</option></select><button class="btn btn-primary" onclick="addTask()">Giao việc</button></div></div>`;
+    const labels={todo:"📋",doing:"🔄",done:"✅"};h+=`<div class="card"><div class="sec"><h3>📋 Danh Sách (${DB.tasks.length})</h3></div>`;DB.tasks.forEach((tk,i)=>{h+=`<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start"><div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(tk.title)}</div><div style="font-size:12px;color:var(--sub)">→ ${esc(tk.assignedTo)} · Hạn: ${tk.due}</div></div><select class="input" style="width:auto;font-size:11px;padding:4px 8px" onchange="DB.tasks[${i}].status=this.value;render()">${["todo","doing","done"].map(s=>`<option value="${s}" ${tk.status===s?"selected":""}>${labels[s]} ${s}</option>`).join("")}</select><button onclick="DB.tasks.splice(${i},1);render()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--sub)">🗑️</button></div>`});h+=`</div>`;
+  }
+  else if(t==="news"){
+    h+=`<div class="card"><div class="sec"><h3>➕ Đăng Tin</h3></div><input id="anTitle" class="input" placeholder="Tiêu đề" style="margin-bottom:8px"><textarea id="anBody" class="input" rows="3" placeholder="Nội dung..." style="margin-bottom:8px"></textarea><input id="anImg" class="input" placeholder="Link ảnh (tuỳ chọn)" style="margin-bottom:8px"><div style="display:flex;gap:8px;flex-wrap:wrap"><select id="anTag" class="input" style="width:auto"><option>Quan trọng</option><option selected>Tin mới</option><option>Vinh danh</option></select><label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--sub)"><input type="checkbox" id="anSignup"> Cho đăng ký</label><button class="btn btn-primary" onclick="addNews()">Đăng</button></div></div>`;
+    h+=`<div class="card"><div class="sec"><h3>📰 Tin (${DB.news.length})</h3></div>`;DB.news.forEach((n,i)=>{h+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-size:13px;font-weight:600">${esc(n.title)}</div><div style="font-size:11px;color:var(--sub)">👁️${n.readBy.length} đọc ${n.signups?.length?`· ✋${n.signups.length} đăng ký`:""}</div></div><span class="pill ${pillCls(n.tag)}">${n.tag}</span><button onclick="DB.news.splice(${i},1);render()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--sub)">🗑️</button></div>`});h+=`</div>`;
+  }
+  else if(t==="sku"){
+    h+=`<div class="card"><div class="sec"><h3>➕ Thêm SKU</h3></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><input id="asCode" class="input" placeholder="Mã SKU"><input id="asName" class="input" placeholder="Tên SP"><input id="asStock" class="input" type="number" placeholder="Tồn kho"><input id="asLoc" class="input" placeholder="Vị trí"><input id="asPrice" class="input" placeholder="Giá"><input id="asNote" class="input" placeholder="Ghi chú"></div><button class="btn btn-primary" onclick="addSKU()">Thêm</button></div>`;
+    h+=`<div class="card"><div class="sec"><h3>📦 Kho (${DB.skus.length})</h3></div>`;DB.skus.forEach((s,i)=>{h+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(s.name)}</div><div class="mono" style="font-size:11px;color:var(--sub)">${esc(s.sku)} · ${esc(s.location)}</div></div><span class="mono" style="font-size:14px;font-weight:800;color:${s.stock<15?"var(--red)":"var(--green)"}">${s.stock}</span><button onclick="DB.skus.splice(${i},1);render()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--sub)">🗑️</button></div>`});h+=`</div>`;
+  }
+  else if(t==="faq"){
+    h+=`<div class="card"><div class="sec"><h3>➕ Thêm FAQ</h3></div><input id="afQ" class="input" placeholder="Câu hỏi..." style="margin-bottom:8px"><textarea id="afA" class="input" rows="2" placeholder="Trả lời..." style="margin-bottom:8px"></textarea><div style="display:flex;gap:8px"><select id="afTag" class="input" style="width:auto"><option>Quy trình</option><option>Quan trọng</option><option>ToneLux</option><option>Sự cố</option><option>Vật tư</option><option>Hàng ngày</option></select><button class="btn btn-primary" onclick="addFAQ()">Thêm</button></div></div>`;
+    h+=`<div class="card"><div class="sec"><h3>📖 FAQ (${DB.faq.length})</h3></div>`;DB.faq.forEach((f,i)=>{h+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(f.q)}</div></div><button onclick="DB.faq.splice(${i},1);render()" style="background:none;border:none;cursor:pointer;font-size:12px;color:var(--sub)">🗑️</button></div>`});h+=`</div>`;
+  }
+  return h+`</div>`}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════════════
+function sendChat(){const i=document.getElementById("chatInput");if(!i||!i.value.trim())return;const now=new Date();const msg={user:USER,text:i.value.trim(),time:now.getHours()+":"+String(now.getMinutes()).padStart(2,"0"),role:"staff"};DB.chat.push({id:Date.now(),...msg});if(sbClient)sbInsert('chat_messages',{user_name:msg.user,text:msg.text,role:msg.role});render()}
+function sendKudos(){const i=document.getElementById("kudosInput");if(!i||!i.value.trim())return;DB.kudos.unshift({from:USER,to:"?",msg:i.value.trim(),sticker:"💛",time:"Vừa xong"});if(sbClient)sbInsert('kudos',{from_user:USER,to_user:"?",message:i.value.trim(),sticker:"💛"});render()}
+function markRead(idx){const n=DB.news[idx];if(n&&!n.readBy.includes(USER)){n.readBy.push(USER);if(sbClient)sbInsert('news_interactions',{news_id:n.id,user_name:USER,action:'read'}).catch(()=>{});}render()}
+function signupNews(idx){const n=DB.news[idx];if(n&&!n.signups.includes(USER)){n.signups.push(USER);if(sbClient)sbInsert('news_interactions',{news_id:n.id,user_name:USER,action:'signup'}).catch(()=>{});}render()}
+
+function searchSKU(q){const el=document.getElementById("skuResults");if(!el)return;if(!q.trim()){el.innerHTML="";return}const lq=q.toLowerCase();const r=DB.skus.filter(s=>(s.sku+s.name+s.location+s.note).toLowerCase().includes(lq));if(!r.length){el.innerHTML=`<div style="text-align:center;padding:16px;color:var(--sub);font-size:13px">Không tìm thấy "${esc(q)}"</div>`;return}el.innerHTML=r.map(s=>`<div style="padding:10px 12px;border-radius:12px;background:var(--input);border:1px solid var(--border);margin-top:8px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:14px;font-weight:800">${esc(s.name)}</span><span class="mono" style="font-size:15px;font-weight:900;color:${s.stock<15?"var(--red)":"var(--green)"}">${s.stock}</span></div><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill pill-blue">${esc(s.sku)}</span><span class="pill pill-purple">📍 ${esc(s.location)}</span><span class="pill pill-green">${s.price}</span>${s.note?`<span class="pill ${s.stock<15?"pill-red":"pill-yellow"}">${esc(s.note)}</span>`:""}</div></div>`).join("")}
+function searchFAQ(q){const el=document.getElementById("faqList");if(!el)return;const lq=q.toLowerCase();const f=q.trim()?DB.faq.filter(f=>(f.q+f.a+f.tag).toLowerCase().includes(lq)):DB.faq;if(!f.length){el.innerHTML=`<div style="text-align:center;padding:16px;color:var(--sub)">Không tìm thấy</div>`;return}el.innerHTML=f.map(f=>{const idx=DB.faq.indexOf(f);const o=S.openFaq===idx;return`<div class="faq-item ${o?"open":""}"><button class="faq-btn" onclick="S.openFaq=S.openFaq===${idx}?null:${idx};render()"><span class="faq-arrow">›</span><span style="flex:1;font-size:13px;font-weight:700;line-height:1.3">${esc(f.q)}</span><span class="pill ${pillCls(f.tag)}">${f.tag}</span></button><div class="faq-answer">${esc(f.a)}</div></div>`}).join("")}
+
+function addAlert(){const i=document.getElementById("newAlert");if(!i||!i.value.trim())return;const txt=i.value.trim();DB.alerts.push({id:Date.now(),text:txt});if(sbClient)sbInsert('alerts',{text:txt});render()}
+function addNote(){const i=document.getElementById("newNote");const p=document.getElementById("notePriority");if(!i||!i.value.trim())return;const txt=i.value.trim();const pri=p?.value||"normal";DB.todayNotes.push({id:Date.now(),text:txt,priority:pri});if(sbClient)sbInsert('today_notes',{text:txt,priority:pri});render()}
+function addTask(){const t=document.getElementById("atTitle")?.value?.trim();const to=document.getElementById("atTo")?.value?.trim();if(!t||!to)return;const task={title:t,assignedBy:"Trinh",assignedTo:to,due:document.getElementById("atDue")?.value?.trim()||"—",status:"todo",priority:document.getElementById("atPri")?.value||"normal",note:document.getElementById("atNote")?.value?.trim()||""};DB.tasks.unshift({id:Date.now(),...task});if(sbClient)sbInsert('tasks',{title:task.title,assigned_by:task.assignedBy,assigned_to:task.assignedTo,due:task.due,status:task.status,priority:task.priority,note:task.note});render()}
+function addNews(){const t=document.getElementById("anTitle")?.value?.trim();const b=document.getElementById("anBody")?.value?.trim();if(!t||!b)return;const n={title:t,tag:document.getElementById("anTag")?.value||"Tin mới",time:"Vừa đăng",body:b,img:document.getElementById("anImg")?.value?.trim()||"",readBy:[],signups:[],canSignup:document.getElementById("anSignup")?.checked||false};DB.news.unshift({id:Date.now(),...n});if(sbClient)sbInsert('news',{title:n.title,tag:n.tag,body:n.body,img:n.img,can_signup:n.canSignup});render()}
+function addSKU(){const c=document.getElementById("asCode")?.value?.trim();const n=document.getElementById("asName")?.value?.trim();if(!c||!n)return;const sku={sku:c,name:n,stock:+(document.getElementById("asStock")?.value||0),location:document.getElementById("asLoc")?.value?.trim()||"—",price:document.getElementById("asPrice")?.value?.trim()||"—",note:document.getElementById("asNote")?.value?.trim()||""};DB.skus.push(sku);if(sbClient)sbInsert('skus',sku);render()}
+function addFAQ(){const q=document.getElementById("afQ")?.value?.trim();const a=document.getElementById("afA")?.value?.trim();if(!q||!a)return;const tag=document.getElementById("afTag")?.value||"Quy trình";DB.faq.push({q,a,tag});if(sbClient)sbInsert('faq',{question:q,answer:a,tag});render()}
+
+render();
+</script>
+</body>
+</html>
